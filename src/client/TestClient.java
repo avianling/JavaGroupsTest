@@ -2,11 +2,16 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.util.Map;
 
+import org.jgroups.Address;
+import org.jgroups.Header;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
+import org.jgroups.stack.IpAddress;
 
 public class TestClient extends ReceiverAdapter {
 
@@ -30,7 +35,8 @@ public class TestClient extends ReceiverAdapter {
 	
 	public void start() throws Exception
 	{
-		channel.connect("test");
+		Address serverAddress = new IpAddress( InetAddress.getByName("ec2-54-252-187-83.ap-southeast-2.compute.amazonaws.com") , 50512 );
+		channel.connect("test", serverAddress, (long)2000);
 		
 		process();
 	}
@@ -65,6 +71,7 @@ public class TestClient extends ReceiverAdapter {
 
 
 	public void receive(Message msg) {
+		System.out.println(msg.dest());
 	    System.out.println(msg.getSrc() + ": " + msg.getObject());
 	}
 }
