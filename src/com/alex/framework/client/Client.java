@@ -11,10 +11,26 @@ import com.alex.framework.Message;
 public interface Client {
 	public void Connect();
 	
-	public void SendMessage( Message msg );
+	/**
+	 * A method to register this client with the server.
+	 * This must be called before any other communications are attempted.
+	 */
+	public void Register();
+	
+	/**
+	 * A method to join a given group.
+	 * Will fail if we are not already registered.
+	 * @param groupName
+	 */
+	public void JoinGroup( String groupName );
 	
 	public void SetMessageHandler( MessageHandler msgHandler );
 	
 	public void Close();
 	
+	/**
+	 * Post the given message to the server.
+	 * @param message
+	 */
+	public void Post(String message, String group);
 }

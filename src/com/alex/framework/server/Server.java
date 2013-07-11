@@ -14,4 +14,6 @@ public interface Server {
 	 * Start the server.
 	 */
 	public void Start();
+	
+	public void SetMessageHandler( MessageHandler msgHandler );
 }
