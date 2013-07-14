@@ -5,10 +5,11 @@ import com.alex.framework.Message;
 /**
  * Client objects to handle connection & communication with the server.
  * Contains options to send messages & set retrival options.
+ * Handles communication with the server.
  * @author Alex
  *
  */
-public interface Client {
+public interface ServerHandler {
 	public void Connect();
 	
 	/**

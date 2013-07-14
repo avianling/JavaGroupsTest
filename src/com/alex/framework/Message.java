@@ -23,4 +23,8 @@ public class Message {
 	public String Serialize() {
 		return JSON.toJson(this);
 	}
+	
+	public void setHeader( String header, String value ) {
+		Headers.put(header, value);
+	}
 }

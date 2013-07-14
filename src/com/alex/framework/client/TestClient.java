@@ -15,10 +15,12 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import com.alex.framework.Message;
+import com.alex.framework.MessageConstants;
+import com.alex.framework.MessageFactory;
 import com.alex.json.JSON;
 import com.alex.logging.Logger;
 
-public class TestClient implements Client {
+public class TestClient implements ServerHandler {
 
 	private String username;
 	
@@ -91,8 +93,7 @@ public class TestClient implements Client {
 	@Override
 	public void Register() {
 		// Construct a registration message.
-		Message msg = new Message();
-		msg.Headers.put("code", "registration");
+		Message msg = MessageFactory.makeRegisterMessage();
 		
 		Logger.Log("Client: Starting to send registration message");
 		
@@ -100,15 +101,14 @@ public class TestClient implements Client {
 		
 		if ( response != null ) {
 			// Check the response to see if we were able to register successfully.
-			switch ( response.Headers.get("code") ) {
-			case "ok":
+			switch ( response.Headers.get(MessageConstants.FIELD_CODE) ) {
+			case MessageConstants.CODE_SUCCESS:
 				// Registered successfully.
-				idToken = response.Headers.get("idToken");
+				idToken = response.Headers.get(MessageConstants.FIELD_IDTOKEN);
 				break;
 				
-			case "fail":
-				// We failed to register
-				//TODO: Handle this case here. 
+			case MessageConstants.CODE_FAIL:
+				
 				break;
 			}
 		}
@@ -125,13 +125,15 @@ public class TestClient implements Client {
 	@Override
 	public void JoinGroup(String groupName) {
 		// Generate the message to send to the server.
-		Message msg = new Message();
-		//TODO: The method construction should be handled by a factory. Applied to all message construction.
-		msg.Headers.put("code", "joinGroup");
+		Message msg = MessageFactory.makeJoinGroupMessage(idToken, groupName);
+		/*msg.Headers.put("code", "joinGroup");
 		msg.Headers.put("groupName", groupName);
-		msg.Headers.put("idToken", idToken);
+		msg.Headers.put("idToken", idToken);*/
 		
 		Message response = SendMessage(msg);
+		
+		
+		//TODO: Handle message responses / failures.
 	}
 	
 	/**
@@ -139,11 +141,11 @@ public class TestClient implements Client {
 	 */
 	@Override
 	public void Post(String message, String group) {
-		Message msg = new Message();
-		msg.Payload = message;
+		Message msg = MessageFactory.makeStringMessage(idToken, group, message);
+		/*msg.Payload = message;
 		msg.Headers.put("code", "message");
 		msg.Headers.put("idToken", idToken);
-		msg.Headers.put("groupName", group);
+		msg.Headers.put("groupName", group);*/
 		
 		Message response = SendMessage(msg);
 	}

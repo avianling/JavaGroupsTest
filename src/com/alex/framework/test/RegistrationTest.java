@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.alex.framework.client.Client;
+import com.alex.framework.client.ServerHandler;
 import com.alex.framework.server.Server;
 import com.alex.framework.server.SimpleServer;
 import com.alex.framework.client.TestClient;
@@ -16,7 +16,7 @@ public class RegistrationTest {
 		Server s = new SimpleServer();
 		s.Start();
 		
-		Client client = new com.alex.framework.client.TestClient();
+		ServerHandler client = new com.alex.framework.client.TestClient();
 		
 		client.Register();
 		
@@ -31,7 +31,7 @@ public class RegistrationTest {
 		Server s = new SimpleServer();
 		s.Start();
 		
-		Client client = new com.alex.framework.client.TestClient();
+		ServerHandler client = new com.alex.framework.client.TestClient();
 		
 		client.Register();
 		
@@ -44,8 +44,8 @@ public class RegistrationTest {
 		s.Start();
 		
 		// build two clients.
-		Client client1 = new com.alex.framework.client.TestClient();
-		Client client2 = new com.alex.framework.client.TestClient();
+		ServerHandler client1 = new com.alex.framework.client.TestClient();
+		ServerHandler client2 = new com.alex.framework.client.TestClient();
 		
 		// Make them both register and join the same group.
 		client1.Register();
