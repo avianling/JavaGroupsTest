@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Map;
 
 import com.alex.framework.Message;
+import com.alex.framework.MessageConstants;
 import com.alex.framework.server.exceptions.NoSuchClientException;
 import com.alex.framework.server.registrar.ClientRegistrar;
 import com.alex.json.JSON;
@@ -46,14 +47,14 @@ public class SimpleMessageHandler implements MessageHandler {
 			Message response = new Message();
 			
 			switch ( m.Headers.get("code") ) {
-			case "registration":
+			case MessageConstants.CODE_REGISTRATION:
 				// Run the registration code.
 				String clientIDToken = ClientRegistrar.get().registerClient();
 				response.Headers.put("idToken",clientIDToken);
 				response.Headers.put("code","ok");
 				break;
 				
-			case "joinGroup":
+			case MessageConstants.CODE_JOIN_GROUP:
 				// Run the join group code.
 				// Check if we have an idtoken.
 				// If we don't, fail.
@@ -83,7 +84,7 @@ public class SimpleMessageHandler implements MessageHandler {
 				
 				break;
 				
-			case "message":
+			case MessageConstants.CODE_MESSAGE_STRING:
 				// Post a message.
 				// check if this is a valid client.
 				if ( m.Headers.containsKey("idToken") ) {
@@ -112,12 +113,42 @@ public class SimpleMessageHandler implements MessageHandler {
 				
 				
 				break;
+				
+			case MessageConstants.CODE_UPDATE_REQUEST:
+				// Work out which client we are working with.
+				if ( m.Headers.containsKey(MessageConstants.FIELD_IDTOKEN)) {
+					// Get a list of all of the messages we need to send back to the user.
+					try {
+						ClientHandler client = ClientRegistrar.get().findClient(m.Headers.get(MessageConstants.FIELD_IDTOKEN));
+						
+						for ( String groupName : client.getGroups() ) {
+							GroupAdapter adapter = client.getGroup(groupName);
+							for ( Message newMessage : adapter.getUpdates() ) {
+								clientSocket.getOutputStream().write(newMessage.Serialize().getBytes());
+								clientSocket.getOutputStream().write("\n".getBytes());
+							}
+						}
+						
+					} catch (NoSuchClientException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						response.setHeader(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
+						response.Payload = e.getMessage();
+						break;
+					}
+					
+				} else {
+					response.setHeader(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
+				}
+				
+				
+				break;
 			}
 			
 			
 			
 			clientSocket.getOutputStream().write(response.Serialize().getBytes());
-			clientSocket.getOutputStream().write("\n".getBytes());
+			clientSocket.getOutputStream().write("\n\n".getBytes());
 			clientSocket.close();
 			
 		} catch (IOException e) {
@@ -127,6 +158,5 @@ public class SimpleMessageHandler implements MessageHandler {
 		
 		
 	}
-
 
 }

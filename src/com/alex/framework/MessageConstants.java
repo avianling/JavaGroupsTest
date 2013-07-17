@@ -4,6 +4,7 @@ public class MessageConstants {
 	// The possible values for the code field in a message.
 	public static final String CODE_REGISTRATION = "registration";
 	public static final String CODE_JOIN_GROUP = "joinGroup";
+	public static final String CODE_UPDATE_REQUEST = "update";
 	public static final String CODE_MESSAGE_STRING = "message";
 	public static final String CODE_FAIL = "fail";
 	public static final String CODE_SUCCESS = "ok";

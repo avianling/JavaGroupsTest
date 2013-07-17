@@ -13,6 +13,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.alex.framework.Message;
 import com.alex.framework.MessageConstants;
@@ -57,7 +59,13 @@ public class TestClient implements ServerHandler {
 		
 	}
 
-	public Message SendMessage(Message msg) {
+	/**
+	 * A Helped function to send a message to the server
+	 * and return an array of all the messages we received.
+	 * @param msg
+	 * @return
+	 */
+	public List<Message> SendMessage(Message msg) {
 		Connect();
 		
 		Logger.Log("Client: Starting to send message.");
@@ -65,7 +73,7 @@ public class TestClient implements ServerHandler {
 			OutputStream out = _socket.getOutputStream();
 			String data = msg.Serialize();
 			out.write(data.getBytes());
-			out.write("\n".getBytes());
+			out.write("\n\n".getBytes()); // one new line to signal the end of the message and one to signal the end of the sequence.
 			
 			Logger.Log("Client: Message Sent.");
 			
@@ -74,14 +82,28 @@ public class TestClient implements ServerHandler {
 			InputStream in = _socket.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			
-			Message response = (Message) JSON.fromJson(reader.readLine(), Message.class);
-			Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
+			// ALEX: Modifying to allow the client to read multiple messages in one go.
+			// Message sequences will be terminated with a blank line. 
+			LinkedList<Message> receivedMessages = new LinkedList<Message>();
+			
+			String line = reader.readLine();
+			while ( line.length() > 0 ) {
+				Message response = (Message) JSON.fromJson(line, Message.class);
+				Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
+				
+				// If the message is valid, add it to the list of received messages.
+				if ( response != null ) {
+					receivedMessages.addLast(response);
+				}
+				
+				line = reader.readLine();
+			}
 			
 			out.close();
 			in.close();
 			_socket.close();
 			
-			return response;
+			return receivedMessages;
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -97,14 +119,15 @@ public class TestClient implements ServerHandler {
 		
 		Logger.Log("Client: Starting to send registration message");
 		
-		Message response = SendMessage(msg);
+		LinkedList<Message> response = (LinkedList)SendMessage(msg);
 		
-		if ( response != null ) {
+		// We only expect one response from the server.
+		if ( response.size() == 1 ) {
 			// Check the response to see if we were able to register successfully.
-			switch ( response.Headers.get(MessageConstants.FIELD_CODE) ) {
+			switch ( response.getFirst().Headers.get(MessageConstants.FIELD_CODE) ) {
 			case MessageConstants.CODE_SUCCESS:
 				// Registered successfully.
-				idToken = response.Headers.get(MessageConstants.FIELD_IDTOKEN);
+				idToken = response.getFirst().Headers.get(MessageConstants.FIELD_IDTOKEN);
 				break;
 				
 			case MessageConstants.CODE_FAIL:
@@ -130,7 +153,7 @@ public class TestClient implements ServerHandler {
 		msg.Headers.put("groupName", groupName);
 		msg.Headers.put("idToken", idToken);*/
 		
-		Message response = SendMessage(msg);
+		List<Message> response = SendMessage(msg);
 		
 		
 		//TODO: Handle message responses / failures.
@@ -147,7 +170,18 @@ public class TestClient implements ServerHandler {
 		msg.Headers.put("idToken", idToken);
 		msg.Headers.put("groupName", group);*/
 		
-		Message response = SendMessage(msg);
+		List<Message> response = SendMessage(msg);
+	}
+
+	@Override
+	public void GetUpdates() {
+		Message msg = MessageFactory.makeUpdateRequestMessage(idToken);
+		
+		List<Message> response = SendMessage(msg);
+		
+		for ( Message m : response ) {
+			handler.onMessageReceived(m);
+		}
 	}
 
 }

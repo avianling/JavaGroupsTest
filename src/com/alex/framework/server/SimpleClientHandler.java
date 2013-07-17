@@ -1,5 +1,6 @@
 package com.alex.framework.server;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -29,8 +30,7 @@ public class SimpleClientHandler implements ClientHandler{
 	public void joinGroup(String groupName) {
 		try {
 			GroupAdapter adapter = new JGroupAdapter();
-			adapter.setClientHandler(this);
-			adapter.joinGroup(groupName);
+			adapter.Start(this, groupName);
 			groups.put(groupName, adapter);
 		} catch ( Exception e ) {
 			e.printStackTrace();
@@ -48,6 +48,16 @@ public class SimpleClientHandler implements ClientHandler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public Collection<String> getGroups() {
+		return groups.keySet();
+	}
+	
+	@Override
+	public GroupAdapter getGroup(String groupName) {
+		return groups.get(groupName);
 	}
 
 }

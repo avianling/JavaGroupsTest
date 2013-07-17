@@ -1,5 +1,7 @@
 package com.alex.framework.server;
 
+import java.util.Collection;
+
 import com.alex.framework.Message;
 
 
@@ -37,4 +39,17 @@ public interface ClientHandler {
 	 * @param msg
 	 */
 	public void sendMessageToGroup( Message msg );
+	
+	/**
+	 * Get the names of each group of which this client is a member.
+	 * @return
+	 */
+	public Collection<String> getGroups();
+	
+	/**
+	 * A method to get the group adapter for a group with a given name.
+	 * @param groupName
+	 * @return
+	 */
+	public GroupAdapter getGroup( String groupName );
 }

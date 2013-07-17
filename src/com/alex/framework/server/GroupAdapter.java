@@ -1,5 +1,8 @@
 package com.alex.framework.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alex.framework.Message;
 
 /**
@@ -13,11 +16,13 @@ public interface GroupAdapter {
 	//TODO: Implement proper exceptions for these methods.
 	
 	/**
-	 * A method to join a particular group.
+	 * A method to create the group adapter.
+	 * The constructor is not used for this as using the perscribed interface allows for the swapping
+	 * of different concrete group adapters and thus increases modifiability.
+	 * @param client
 	 * @param groupName
-	 * @throws Exception if there is an issue joining that particular group. 
 	 */
-	public void joinGroup( String groupName ) throws Exception;
+	public void Start( ClientHandler client, String groupName ) throws Exception;
 	
 	/**
 	 * A method to post a given message to this group.
@@ -27,8 +32,7 @@ public interface GroupAdapter {
 	public void postMessage( Message msg ) throws Exception;
 	
 	/**
-	 * Set which client handler will be used to process outgoing messages meant for this client.
-	 * @param handler
+	 * This method will check for any updates and send them back to the client.
 	 */
-	public void setClientHandler( ClientHandler handler );
+	public List<com.alex.framework.Message> getUpdates();
 }

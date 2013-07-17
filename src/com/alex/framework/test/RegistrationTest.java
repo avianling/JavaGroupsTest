@@ -56,5 +56,9 @@ public class RegistrationTest {
 		
 		client1.Post("Hello everyone!", "testGroup");
 	}
+	
+	@Test
+	public void testGettingUpdates() {
+	}
 
 }

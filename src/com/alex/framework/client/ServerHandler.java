@@ -34,4 +34,9 @@ public interface ServerHandler {
 	 * @param message
 	 */
 	public void Post(String message, String group);
+	
+	/**
+	 * A method to check for updates on the server. Updates will be passed to the message handler?
+	 */
+	public void GetUpdates();
 }

@@ -28,4 +28,14 @@ public class MessageFactory {
 		
 		return msg;
 	}
+	
+	public static Message makeUpdateRequestMessage( String idToken )
+	{
+		Message msg = new Message();
+		
+		msg.setHeader(MessageConstants.FIELD_CODE, MessageConstants.CODE_UPDATE_REQUEST);
+		msg.setHeader(MessageConstants.FIELD_IDTOKEN, idToken);
+		
+		return msg;
+	}
 }
