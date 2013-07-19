@@ -6,7 +6,12 @@ package com.alex.logging;
  *
  */
 public class Logger {
+	
+	public static boolean LogToConsole = true;
+	
 	public static void Log( String message ) {
-		System.out.println(message);
+		if ( LogToConsole ) {
+			System.out.println(message);
+		}
 	}
 }

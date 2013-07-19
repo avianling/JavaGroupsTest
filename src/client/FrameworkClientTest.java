@@ -7,7 +7,7 @@ import com.alex.framework.server.SimpleServer;
 
 public class FrameworkClientTest {
 	public static void main(String[] args ) throws Exception {
-		ServerHandler client = new com.alex.framework.client.TestClient();
+		ServerHandler client = new com.alex.framework.client.TestClient("localhost",50512);
 		
 		// Hack - launch the server on this machine. 
 		Server s = new SimpleServer();

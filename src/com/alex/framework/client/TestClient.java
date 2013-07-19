@@ -32,17 +32,21 @@ public class TestClient implements ServerHandler {
 	
 	private String idToken;
 	
-	public TestClient() {
+	private InetSocketAddress serverAddress;
+	
+	public TestClient( String serverIP, int port ) throws UnknownHostException {
 		// Get a unique username.
 		username = "alexander";
 		JSON json = new JSON();
+		
+		serverAddress = new InetSocketAddress(InetAddress.getByName(serverIP), port);
 	}
 	
 	@Override
 	public void Connect() {
 		_socket = new Socket();
 		try {
-			_socket.connect( new InetSocketAddress(InetAddress.getLocalHost(), 50512) );
+			_socket.connect( serverAddress ); // new InetSocketAddress(InetAddress.getLocalHost(), 50512)
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
