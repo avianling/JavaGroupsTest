@@ -8,6 +8,7 @@ import com.alex.framework.Message;
 import com.alex.framework.client.MessageHandler;
 import com.alex.framework.client.ServerHandler;
 import com.alex.logging.Logger;
+import com.alex.logging.TimingRecord;
 
 public class TestClient implements MessageHandler {
 
@@ -32,8 +33,16 @@ public class TestClient implements MessageHandler {
 		
 		while(true) {
 			String input = inputReader.readLine();
+			Logger.LogTiming("Starting to send a message");
 			handler.Post(input, "testGroup");
-			handler.GetUpdates();
+			Logger.LogTiming("Received by client");
+			//handler.GetUpdates();
+			
+			// Print the timings!
+			for ( TimingRecord record : TimingRecord.records ) {
+				System.out.println(record.message + "," + record.time);
+			}
+			System.out.println("\n");
 		}
 	}
 
