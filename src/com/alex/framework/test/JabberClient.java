@@ -33,15 +33,15 @@ public class JabberClient implements MessageHandler {
 		handler.JoinGroup(group);
 		
 		while (true){
-			Thread.sleep(rate);
-			
 			handler.Post(message, group);
+			
+			Thread.sleep(rate);
 		}
 	
 	}
 	
 	public static void main( String[] args ) throws UnknownHostException, InterruptedException {
-		JabberClient client = new JabberClient(100, "something", "testGroup");
+		JabberClient client = new JabberClient(500, "something", "testGroup");
 	}
 	
 	
