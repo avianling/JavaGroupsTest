@@ -32,7 +32,7 @@ public class SimpleMessageHandler implements MessageHandler {
 			// Manually read the string... :(
 			BufferedReader reader = new BufferedReader(r);
 			String data = reader.readLine();
-			System.out.println("Server: Received message '" + data + "'");
+			Logger.Log("Server: Received message '" + data + "'");
 			Message m = JSON.parser.fromJson(data, Message.class);
 			
 			Logger.Log("Server: finished downloading message");
