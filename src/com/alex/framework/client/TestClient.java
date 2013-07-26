@@ -135,6 +135,7 @@ public class TestClient implements ServerHandler {
 		LinkedList<Message> response = (LinkedList)SendMessage(msg);
 		
 		// We only expect one response from the server.
+		String msgCode = response.getFirst().Headers.get(MessageConstants.FIELD_CODE);
 		if ( response.size() == 1 ) {
 			// Check the response to see if we were able to register successfully.
 			switch ( response.getFirst().Headers.get(MessageConstants.FIELD_CODE) ) {
