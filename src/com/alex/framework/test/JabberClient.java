@@ -26,7 +26,7 @@ public class JabberClient implements MessageHandler {
 		ServerHandler handler = new com.alex.framework.client.TestClient("ec2-54-252-187-83.ap-southeast-2.compute.amazonaws.com",50512);
 		handler.SetMessageHandler( new TestClient() );
 		
-		Logger.LogToConsole = false;
+		Logger.LogToConsole = true;
 		
 		handler.Register();
 		
