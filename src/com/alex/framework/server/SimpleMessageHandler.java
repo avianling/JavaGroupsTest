@@ -46,15 +46,15 @@ public class SimpleMessageHandler implements MessageHandler {
 			
 			Message response = new Message();
 			
-			switch ( m.Headers.get("code") ) {
-			case MessageConstants.CODE_REGISTRATION:
+			String msgCode = m.Headers.get(MessageConstants.FIELD_CODE);
+			if ( msgCode.equalsIgnoreCase(MessageConstants.CODE_REGISTRATION) ) {
 				// Run the registration code.
 				String clientIDToken = ClientRegistrar.get().registerClient();
 				response.Headers.put("idToken",clientIDToken);
 				response.Headers.put("code","ok");
-				break;
+			}
 				
-			case MessageConstants.CODE_JOIN_GROUP:
+			if ( msgCode.equalsIgnoreCase(MessageConstants.CODE_JOIN_GROUP) ) {
 				// Run the join group code.
 				// Check if we have an idtoken.
 				// If we don't, fail.
@@ -74,17 +74,17 @@ public class SimpleMessageHandler implements MessageHandler {
 					} else {
 						response.Headers.put("code", "fail");
 						response.Payload = "Failed - no group name was supplied";
-						break;
+						
 					}
 				} else {
 					response.Headers.put("code", "fail");
 					response.Payload = "Failed - no id token supplied. Try registering first?";
-					break;
+					
 				}
 				
-				break;
+			}
 				
-			case MessageConstants.CODE_MESSAGE_STRING:
+			if ( msgCode.equalsIgnoreCase(MessageConstants.CODE_MESSAGE_STRING) ) {
 				// Post a message.
 				// check if this is a valid client.
 				if ( m.Headers.containsKey("idToken") ) {
@@ -97,24 +97,24 @@ public class SimpleMessageHandler implements MessageHandler {
 						{
 							response.Headers.put("code","fail");
 							response.Payload = e.getMessage();
-							break;
+							
 						}
 					} else {
 						response.Headers.put("code", "fail");
 						response.Payload = "Failed - no group name was supplied";
-						break;
+						
 					}
 				} else {
 					response.Headers.put("code", "fail");
 					response.Payload = "Failed - no id token supplied. Try registering first?";
-					break;
+					
 				}
 				
 				
 				
-				break;
+			}
 				
-			case MessageConstants.CODE_UPDATE_REQUEST:
+			if ( msgCode.equalsIgnoreCase(MessageConstants.CODE_UPDATE_REQUEST) ) {
 				// Work out which client we are working with.
 				if ( m.Headers.containsKey(MessageConstants.FIELD_IDTOKEN)) {
 					// Get a list of all of the messages we need to send back to the user.
@@ -134,7 +134,6 @@ public class SimpleMessageHandler implements MessageHandler {
 						e.printStackTrace();
 						response.setHeader(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
 						response.Payload = e.getMessage();
-						break;
 					}
 					
 				} else {
@@ -142,7 +141,6 @@ public class SimpleMessageHandler implements MessageHandler {
 				}
 				
 				
-				break;
 			}
 			
 			
