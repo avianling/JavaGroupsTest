@@ -47,7 +47,7 @@ public class TestClient implements MessageHandler {
 	}
 
 	@Override
-	public void onMessageReceived(Message newMessage) {
+	public void messageReceived(Message newMessage) {
 		System.out.println(">>" + newMessage.Payload);
 	}
 

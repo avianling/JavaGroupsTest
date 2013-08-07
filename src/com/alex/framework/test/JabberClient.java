@@ -18,7 +18,7 @@ import com.alex.logging.TimingRecord;
 public class JabberClient implements MessageHandler {
 
 	@Override
-	public void onMessageReceived(Message newMessage) {
+	public void messageReceived(Message newMessage) {
 		// do nothing, we don't care about the response.
 	}
 	
@@ -41,7 +41,7 @@ public class JabberClient implements MessageHandler {
 	}
 	
 	public static void main( String[] args ) throws UnknownHostException, InterruptedException {
-		JabberClient client = new JabberClient(500, "something", "testGroup");
+		JabberClient client = new JabberClient(10000, "something", "testGroup");
 	}
 	
 	

@@ -10,5 +10,5 @@ import com.alex.framework.Message;
  *
  */
 public interface MessageHandler {
-	public void onMessageReceived( Message newMessage );
+	public void messageReceived( Message newMessage );
 }

@@ -196,7 +196,7 @@ public class TestClient implements ServerHandler {
 		List<Message> response = SendMessage(msg);
 		
 		for ( Message m : response ) {
-			handler.onMessageReceived(m);
+			handler.messageReceived(m);
 		}
 	}
 
