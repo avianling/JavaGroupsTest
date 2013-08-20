@@ -34,12 +34,14 @@ public class TestClient implements ServerHandler {
 	
 	private InetSocketAddress serverAddress;
 	
-	public TestClient( String serverIP, int port ) throws UnknownHostException {
+	public TestClient( InetSocketAddress server ) {
 		// Get a unique username.
 		username = "alexander";
 		JSON json = new JSON();
 		
-		serverAddress = new InetSocketAddress(InetAddress.getByName(serverIP), port);
+		
+		//serverAddress = new InetSocketAddress(InetAddress.getByName(serverIP), port);
+		serverAddress = server;
 	}
 	
 	@Override
@@ -70,23 +72,23 @@ public class TestClient implements ServerHandler {
 	 * @return
 	 */
 	public List<Message> SendMessage(Message msg) {
-		Logger.LogTiming("Starting to connect");
+		//Logger.LogTiming("Starting to connect");
 		Connect();
-		Logger.LogTiming("Connected");
+		//Logger.LogTiming("Connected");
 		
 		Logger.Log("Client: Starting to send message.");
 		try {
 			OutputStream out = _socket.getOutputStream();
-			Logger.LogTiming("Starting to serialize message");
+			//Logger.LogTiming("Starting to serialize message");
 			String data = msg.Serialize();
-			Logger.LogTiming("Starting to send data");
+			//Logger.LogTiming("Starting to send data");
 			out.write(data.getBytes());
 			out.write("\n\n".getBytes()); // one new line to signal the end of the message and one to signal the end of the sequence.
-			Logger.LogTiming("Finished sending data");
+			//Logger.LogTiming("Finished sending data");
 			
 			Logger.Log("Client: Message Sent.");
 			
-			Logger.LogTiming("Waiting for response");
+			//Logger.LogTiming("Waiting for response");
 			
 			// Wait for the okay response.
 			// If we don't get one within a certain time limit, retry sending this message.
@@ -97,7 +99,7 @@ public class TestClient implements ServerHandler {
 			// Message sequences will be terminated with a blank line. 
 			LinkedList<Message> receivedMessages = new LinkedList<Message>();
 			
-			Logger.LogTiming("Starting to read response");
+			//Logger.LogTiming("Starting to read response");
 			String line = reader.readLine();
 			while ( line.length() > 0 ) {
 				Message response = (Message) JSON.fromJson(line, Message.class);
@@ -110,7 +112,7 @@ public class TestClient implements ServerHandler {
 				
 				line = reader.readLine();
 			}
-			Logger.LogTiming("Finished Reading Response");
+			//Logger.LogTiming("Finished Reading Response");
 			
 			out.close();
 			in.close();
@@ -138,15 +140,11 @@ public class TestClient implements ServerHandler {
 		String msgCode = response.getFirst().Headers.get(MessageConstants.FIELD_CODE);
 		if ( response.size() == 1 ) {
 			// Check the response to see if we were able to register successfully.
-			switch ( response.getFirst().Headers.get(MessageConstants.FIELD_CODE) ) {
-			case MessageConstants.CODE_SUCCESS:
+			if ( response.getFirst().Headers.get(MessageConstants.FIELD_CODE).equalsIgnoreCase(MessageConstants.CODE_SUCCESS)  ) {
 				// Registered successfully.
 				idToken = response.getFirst().Headers.get(MessageConstants.FIELD_IDTOKEN);
-				break;
+			} else {
 				
-			case MessageConstants.CODE_FAIL:
-				
-				break;
 			}
 		}
 		//TODO: Handle what happens if we don't get a response from sendMessage.
@@ -178,9 +176,9 @@ public class TestClient implements ServerHandler {
 	 */
 	@Override
 	public void Post(String message, String group) {
-		Logger.LogTiming("Starting to build message");
+		//Logger.LogTiming("Starting to build message");
 		Message msg = MessageFactory.makeStringMessage(idToken, group, message);
-		Logger.LogTiming("Message Built");
+		//Logger.LogTiming("Message Built");
 		/*msg.Payload = message;
 		msg.Headers.put("code", "message");
 		msg.Headers.put("idToken", idToken);

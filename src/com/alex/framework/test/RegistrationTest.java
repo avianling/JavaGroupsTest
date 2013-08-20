@@ -2,6 +2,7 @@ package com.alex.framework.test;
 
 import static org.junit.Assert.*;
 
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class RegistrationTest {
 		Server s = new SimpleServer();
 		s.Start();
 		
-		ServerHandler client = new com.alex.framework.client.TestClient("localhost",50512);
+		ServerHandler client = new com.alex.framework.client.TestClient(new InetSocketAddress("localhost",50512));
 		
 		client.Register();
 		
@@ -33,7 +34,7 @@ public class RegistrationTest {
 		Server s = new SimpleServer();
 		s.Start();
 		
-		ServerHandler client = new com.alex.framework.client.TestClient("localhost",50512);
+		ServerHandler client = new com.alex.framework.client.TestClient(new InetSocketAddress("localhost",50512));
 		
 		client.Register();
 		
@@ -46,8 +47,8 @@ public class RegistrationTest {
 		s.Start();
 		
 		// build two clients.
-		ServerHandler client1 = new com.alex.framework.client.TestClient("localhost",50512);
-		ServerHandler client2 = new com.alex.framework.client.TestClient("localhost",50512);
+		ServerHandler client1 = new com.alex.framework.client.TestClient(new InetSocketAddress("localhost",50512));
+		ServerHandler client2 = new com.alex.framework.client.TestClient(new InetSocketAddress("localhost",50512));
 		
 		// Make them both register and join the same group.
 		client1.Register();

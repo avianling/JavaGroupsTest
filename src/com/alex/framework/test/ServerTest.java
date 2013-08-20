@@ -2,6 +2,7 @@ package com.alex.framework.test;
 
 import com.alex.framework.server.Server;
 import com.alex.framework.server.SimpleServer;
+import com.alex.logging.Logger;
 
 public class ServerTest {
 
@@ -10,7 +11,9 @@ public class ServerTest {
 	 */
 	public static void main(String[] args) {
 		// Start a simple server.
+		Logger.LogToConsole = true;
 		Server s = new SimpleServer();
+		
 		s.Start();
 	}
 

@@ -3,3 +3,9 @@ bin/*
 .classpath
 .project
 .settings
+res/*
+gen/*
+libs/android-support-v4.jar
+proguard-project.txt
+project.properties
+Android*
