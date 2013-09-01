@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.alex.framework.Message;
@@ -45,6 +48,9 @@ public class SimpleMessageHandler implements MessageHandler {
 			// At present, just reply with an 'ok' message and a blank ID token.
 			
 			Message response = new Message();
+			List<Message> responseList = new ArrayList<Message>();
+			responseList.add(0, response);
+			OutputStream out = clientSocket.getOutputStream();
 			
 			String msgCode = m.Headers.get(MessageConstants.FIELD_CODE);
 			if ( msgCode.equalsIgnoreCase(MessageConstants.CODE_REGISTRATION) ) {
@@ -124,8 +130,7 @@ public class SimpleMessageHandler implements MessageHandler {
 						for ( String groupName : client.getGroups() ) {
 							GroupAdapter adapter = client.getGroup(groupName);
 							for ( Message newMessage : adapter.getUpdates() ) {
-								clientSocket.getOutputStream().write(newMessage.Serialize().getBytes());
-								clientSocket.getOutputStream().write("\n".getBytes());
+								responseList.add(newMessage);
 							}
 						}
 						
@@ -145,8 +150,11 @@ public class SimpleMessageHandler implements MessageHandler {
 			
 			
 			
-			clientSocket.getOutputStream().write(response.Serialize().getBytes());
-			clientSocket.getOutputStream().write("\n\n".getBytes());
+			for ( Message outgoingMsg : responseList ) {
+				out.write(response.Serialize().getBytes());
+				out.write("\n".getBytes());
+			}
+			out.write("\n".getBytes());
 			clientSocket.close();
 			
 		} catch (IOException e) {

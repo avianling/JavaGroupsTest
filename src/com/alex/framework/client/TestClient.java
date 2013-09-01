@@ -35,6 +35,8 @@ public class TestClient implements ServerHandler {
 	
 	private InetSocketAddress serverAddress;
 	
+	
+	
 	public TestClient( InetSocketAddress server ) {
 		// Get a unique username.
 		username = "alexander";
@@ -184,6 +186,15 @@ public class TestClient implements ServerHandler {
 		
 		
 		//TODO: Handle message responses / failures.
+		// check the first response. This should have the fail / success codes.
+		Message m = response.get(0);
+		if ( m.Headers.get(MessageConstants.FIELD_CODE).equals(MessageConstants.CODE_FAIL)) { 
+			// if the reason is because we weren't registered, register and then try this again.
+			if ( m.Headers.get(MessageConstants.FIELD_FAILURE_CAUSE).equals(MessageConstants.FAIL_CAUSE_NOT_REGISTERED) ) {
+				Register();
+				JoinGroup(groupName);
+			}
+		}
 	}
 	
 	/**
@@ -200,6 +211,22 @@ public class TestClient implements ServerHandler {
 		msg.Headers.put("groupName", group);*/
 		
 		List<Message> response = SendMessage(msg);
+		
+		for ( Message m : response ) {
+			System.out.println(m.Serialize() );
+		}
+		
+		Message m = response.get(0);
+		if ( m!=null ) {
+			if ( m.Headers.get(MessageConstants.FIELD_CODE).equals(MessageConstants.CODE_FAIL)) { 
+				// if the reason is because we weren't registered, register and then try this again.
+				if ( m.Headers.get(MessageConstants.FIELD_FAILURE_CAUSE).equals(MessageConstants.FAIL_CAUSE_NOT_REGISTERED) ) {
+					Register();
+					JoinGroup(group);
+					Post(message, group);
+				}
+			}
+		}
 	}
 
 	@Override

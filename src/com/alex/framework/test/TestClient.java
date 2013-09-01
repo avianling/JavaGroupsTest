@@ -20,7 +20,7 @@ public class TestClient implements MessageHandler {
 	public static void main(String[] args) throws IOException {
 		// create a test client which gets text input from stdin & sends it to the server.
 		GroupTest g = new GroupTest("testGroup");
-		Logger.LogToConsole = false;
+		Logger.LogToConsole = true;
 		BufferedReader inputReader = new BufferedReader( new InputStreamReader( System.in ) );
 		
 		while(true) {
