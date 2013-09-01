@@ -96,22 +96,26 @@ public class SimpleMessageHandler implements MessageHandler {
 				if ( m.Headers.containsKey("idToken") ) {
 					if ( m.Headers.containsKey("groupName")) {
 						try {
+							response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_SUCCESS);
 							ClientHandler clientHandler = ClientRegistrar.get().findClient(m.Headers.get("idToken"));
 							clientHandler.sendMessageToGroup(m);
 							
 						} catch ( NoSuchClientException e )
 						{
-							response.Headers.put("code","fail");
+							response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
+							response.Headers.put(MessageConstants.FIELD_FAILURE_CAUSE, MessageConstants.FAIL_CAUSE_NOT_REGISTERED);
 							response.Payload = e.getMessage();
 							
 						}
 					} else {
-						response.Headers.put("code", "fail");
+						response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
+						response.Headers.put(MessageConstants.FIELD_FAILURE_CAUSE, MessageConstants.FAIL_CAUSE_GROUP_NAME_REQUIRED);
 						response.Payload = "Failed - no group name was supplied";
 						
 					}
 				} else {
-					response.Headers.put("code", "fail");
+					response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
+					response.Headers.put(MessageConstants.FIELD_FAILURE_CAUSE,MessageConstants.FAIL_CAUSE_NOT_REGISTERED);
 					response.Payload = "Failed - no id token supplied. Try registering first?";
 					
 				}

@@ -116,6 +116,7 @@ public class TestClient implements ServerHandler {
 			r.waitingForResponseTime = System.nanoTime() - temp;
 			while ( line.length() > 0 ) {
 				temp = System.nanoTime();
+				System.out.println("SPOON: '" + line + "'");
 				Message response = (Message) JSON.fromJson(line, Message.class);
 				r.serializationTime += System.nanoTime() - temp;
 				//Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
