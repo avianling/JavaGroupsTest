@@ -23,6 +23,8 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 
 	private JChannel channel;
 	
+	private long leaseExpiryTime;
+	
 	private ClientHandler clientHandler;
 	
 	// This is the sequence number of the last message we sent to our client.
@@ -35,22 +37,19 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 		channel = new JChannel();
 		channel.setReceiver(this);
 		
+		updateLease();
 	}
 	
-	/*public void joinGroup(String groupName) throws Exception {
-		
-		Group group = GroupRegistrar.getGroup(groupName);
-		sequenceNumberOfLastMessageToClient = group.getSequenceNumber();
-		
-		channel.connect(groupName);
-		
-	}*/
+	private void updateLease() {
+		leaseExpiryTime = System.currentTimeMillis() + LeaseController.leaseTime;
+	}
 	
 	
 
 	@Override
 	public void postMessage(com.alex.framework.Message msg) throws Exception {
 		// Convert the message into a JGroups message and then post it.
+		updateLease();
 		Logger.Log("Server: GroupAdapter is posting a message to the group");
 		org.jgroups.Message message = new org.jgroups.Message(null, null, msg.Payload);
 		channel.send(message);
@@ -61,6 +60,7 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 	 */
 	public void receive(Message msg) { 
 		Logger.Log("Server: GroupAdapter got a message from the group. Sending it to the client handler.");
+		
 		com.alex.framework.Message message = new com.alex.framework.Message();
 		message.Payload = msg.getObject().toString();
 		if ( msg.dest() != null ) {
@@ -76,6 +76,7 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 		this.groupName = groupName;
 		clientHandler = client;
 		
+		updateLease();
 		Group group = GroupRegistrar.getGroup(groupName);
 		sequenceNumberOfLastMessageToClient = group.getSequenceNumber();
 		
@@ -84,6 +85,7 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 
 	@Override
 	public List<com.alex.framework.Message> getUpdates() {
+		updateLease();
 		try {
 			List<com.alex.framework.Message> messages = GroupRegistrar.getGroup(groupName).getMessagesSince(sequenceNumberOfLastMessageToClient);
 			sequenceNumberOfLastMessageToClient = GroupRegistrar.getGroup(groupName).getSequenceNumber();
@@ -92,6 +94,23 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public long getLeaseExpiryTime() {
+		return leaseExpiryTime;
+	}
+
+	@Override
+	public void destroy() {
+		// Deregister us from JavaGroups
+		channel.close();
+		channel = null;
+		
+		// Deregister us from GCM
+		// TODO:lars
+		
+		clientHandler.leaveGroup(this.groupName);
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.alex.framework.server.ClientHandler;
+import com.alex.framework.server.LeaseController;
 import com.alex.framework.server.SimpleClientHandler;
 import com.alex.framework.server.exceptions.NoSuchClientException;
 import com.alex.logging.Logger;
@@ -29,7 +30,14 @@ public class ClientRegistrar {
 	
 	public ClientRegistrar() {
 		clients = new HashMap<String, ClientHandler>();
+		
+		// start the lease controller.
+		c = new LeaseController();
+		Thread t = new Thread(c);
+		t.start();
 	}
+	
+	private LeaseController c;
 	
 	
 	/**
@@ -59,6 +67,19 @@ public class ClientRegistrar {
 			return clients.get(clientIDToken);
 		} else {
 			throw new NoSuchClientException();
+		}
+	}
+	
+	public void removeClient( ClientHandler client ) {
+		if ( clients.containsValue(client) ) {
+			clients.remove(client);
+		}
+	}
+	
+	
+	public void checkClientLeases() {
+		for ( ClientHandler client : clients.values() ) {
+			client.checkLeases();
 		}
 	}
 }

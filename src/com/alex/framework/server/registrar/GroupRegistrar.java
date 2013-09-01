@@ -1,5 +1,6 @@
 package com.alex.framework.server.registrar;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.alex.framework.server.Group;
@@ -39,6 +40,16 @@ public class GroupRegistrar {
 		
 		// If we got to here without returning anything, throw an exception.
 		throw new CouldNotCreateGroup();
+	}
+	
+	
+	// Destroy any groups which don't have any people in it.
+	public void checkAlive() {
+		Collection<Group> preGroups = groups.values();
+		
+		for ( Group g : preGroups ) {
+			
+		}
 	}
 
 	

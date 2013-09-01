@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alex.framework.Message;
+import com.alex.framework.server.registrar.ClientRegistrar;
 import com.alex.logging.Logger;
 
 public class SimpleClientHandler implements ClientHandler{
@@ -59,5 +60,38 @@ public class SimpleClientHandler implements ClientHandler{
 	public GroupAdapter getGroup(String groupName) {
 		return groups.get(groupName);
 	}
+
+	@Override
+	public void leaveGroup(String groupName) {
+		// leave the group with the specified name.
+		// If we're not a part of any groups, destroy this object. 
+		if ( groups.containsKey(groupName) ) {
+			groups.remove(groupName);
+		}
+		
+		if ( groups.size() == 0 ) {
+			this.destroy();
+		}
+	}
+
+	@Override
+	public void destroy() {
+		// Remove all references to this object?
+		ClientRegistrar.get().removeClient(this);
+	}
+
+	@Override
+	public void checkLeases() {
+		// For every group we are in, check the lease of it.
+		Collection<GroupAdapter> preGroups = groups.values();
+		for ( GroupAdapter group : preGroups ) {
+			long t = System.currentTimeMillis();
+			if ( group.getLeaseExpiryTime() < t ) {
+				group.destroy();
+			}
+		}
+	}
+	
+	
 
 }

@@ -35,4 +35,11 @@ public interface GroupAdapter {
 	 * This method will check for any updates and send them back to the client.
 	 */
 	public List<com.alex.framework.Message> getUpdates();
+	
+	
+	// Returns the time when the lease is going to expire.
+	public long getLeaseExpiryTime();
+	
+	
+	public void destroy();
 }

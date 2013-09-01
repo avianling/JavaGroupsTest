@@ -52,4 +52,13 @@ public interface ClientHandler {
 	 * @return
 	 */
 	public GroupAdapter getGroup( String groupName );
+	
+	
+	public void leaveGroup( String groupName );
+	
+	
+	public void destroy();
+	
+	
+	public void checkLeases();
 }
