@@ -79,13 +79,9 @@ public class ClientRegistrar {
 	
 	
 	public void checkClientLeases() {
-		System.out.println("Lease controller found " + clients.size() + " clients");
 		Collection<ClientHandler> preClients = clients.values();
 		for ( ClientHandler client : preClients ) {
 			client.checkLeases();
 		}
-		
-		
-		System.out.println("Now there are " + clients.size());
 	}
 }

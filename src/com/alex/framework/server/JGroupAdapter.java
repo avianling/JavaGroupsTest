@@ -87,7 +87,7 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 	public List<com.alex.framework.Message> getUpdates() {
 		updateLease();
 		try {
-			List<com.alex.framework.Message> messages = GroupRegistrar.getGroup(groupName).getMessagesSince(sequenceNumberOfLastMessageToClient);
+			List<com.alex.framework.Message> messages = GroupRegistrar.getGroup(groupName).getMessagesSince(0);
 			sequenceNumberOfLastMessageToClient = GroupRegistrar.getGroup(groupName).getSequenceNumber();
 			return messages;
 		} catch ( Exception e ) {
