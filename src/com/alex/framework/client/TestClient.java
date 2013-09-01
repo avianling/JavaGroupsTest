@@ -21,6 +21,7 @@ import com.alex.framework.MessageConstants;
 import com.alex.framework.MessageFactory;
 import com.alex.json.JSON;
 import com.alex.logging.Logger;
+import com.alex.logging.TimingRecord;
 
 public class TestClient implements ServerHandler {
 
@@ -73,22 +74,31 @@ public class TestClient implements ServerHandler {
 	 */
 	public List<Message> SendMessage(Message msg) {
 		//Logger.LogTiming("Starting to connect");
+		TimingRecord r = TimingRecord.records.get(msg.Headers.get("uuid"));
+		long temp = System.nanoTime();
 		Connect();
+		r.connectionTime = System.nanoTime() - temp;
 		//Logger.LogTiming("Connected");
 		
 		Logger.Log("Client: Starting to send message.");
 		try {
 			OutputStream out = _socket.getOutputStream();
 			//Logger.LogTiming("Starting to serialize message");
+			
+			temp = System.nanoTime();
 			String data = msg.Serialize();
-			//Logger.LogTiming("Starting to send data");
+			r.serializationTime = System.nanoTime() - temp;
+			
+			temp = System.nanoTime();
 			out.write(data.getBytes());
 			out.write("\n\n".getBytes()); // one new line to signal the end of the message and one to signal the end of the sequence.
-			//Logger.LogTiming("Finished sending data");
+			r.sendingTime = System.nanoTime() - temp;
+			
+			temp = System.nanoTime();
 			
 			Logger.Log("Client: Message Sent.");
 			
-			//Logger.LogTiming("Waiting for response");
+			
 			
 			// Wait for the okay response.
 			// If we don't get one within a certain time limit, retry sending this message.
@@ -99,18 +109,23 @@ public class TestClient implements ServerHandler {
 			// Message sequences will be terminated with a blank line. 
 			LinkedList<Message> receivedMessages = new LinkedList<Message>();
 			
-			//Logger.LogTiming("Starting to read response");
+
 			String line = reader.readLine();
+			r.waitingForResponseTime = System.nanoTime() - temp;
 			while ( line.length() > 0 ) {
+				temp = System.nanoTime();
 				Message response = (Message) JSON.fromJson(line, Message.class);
-				Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
+				r.serializationTime += System.nanoTime() - temp;
+				//Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
 				
 				// If the message is valid, add it to the list of received messages.
 				if ( response != null ) {
 					receivedMessages.addLast(response);
 				}
 				
+				temp = System.nanoTime();
 				line = reader.readLine();
+				r.downloadingTime = System.nanoTime() - temp;
 			}
 			//Logger.LogTiming("Finished Reading Response");
 			

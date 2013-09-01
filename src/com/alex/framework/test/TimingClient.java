@@ -3,10 +3,12 @@ package com.alex.framework.test;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.alex.framework.Message;
 import com.alex.framework.client.AsyncGroup;
 import com.alex.logging.Logger;
+import com.alex.logging.TimingRecord;
 
 public class TimingClient extends AsyncGroup {
 
@@ -25,21 +27,29 @@ public class TimingClient extends AsyncGroup {
 	}
 
 	public void sendTimedMessage() {
-		msgSendTimes.put(msgCount+"", System.nanoTime());
 		sendMessage(msgCount+"");
-		msgCount++;
 	}
 	
 	@Override
 	public void onMessageReceived(Message msg) {
 		// Get the time when the message was sent.
-		if ( msgSendTimes.containsKey(""+msg.Payload)) {
+		/*if ( msgSendTimes.containsKey(""+msg.Payload)) {
 			long startTime = msgSendTimes.get((String)msg.Payload);
 			long elapsedTime = System.nanoTime() - startTime;
 			msgSendTimes.remove((String)msg.Payload);
 			msgTimes.add(elapsedTime);
 			System.out.println(elapsedTime / 1000000000f);
+		}*/
+		
+		// if the message is one which we have been collecting timing information,
+		// display that timing information.
+		for (Map.Entry<String, com.alex.logging.TimingRecord> entry : TimingRecord.records.entrySet())
+		{
+			if ( entry.getValue().serializationTime != 0 ) {
+				System.out.println(entry.getValue().print());
+			}
 		}
+		System.out.println("----------");
 	}
 
 	
