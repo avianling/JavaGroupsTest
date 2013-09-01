@@ -212,12 +212,6 @@ public class TestClient implements ServerHandler {
 		
 		List<Message> response = SendMessage(msg);
 		
-		System.out.println("Messages from the server:" );
-		for ( Message m : response ) {
-			System.out.println(m.Serialize() );
-		}
-		System.out.println("--End Messages--");
-		
 		Message m = response.get(0);
 		if ( m!=null ) {
 			if ( m.Headers.get(MessageConstants.FIELD_CODE).equals(MessageConstants.CODE_FAIL)) { 
@@ -226,10 +220,6 @@ public class TestClient implements ServerHandler {
 					Register();
 					JoinGroup(group);
 					Post(message, group);
-				}
-			} else {
-				for ( int i=1; i < response.size(); i++ ) {
-					handler.messageReceived(response.get(i));
 				}
 			}
 		}
@@ -241,7 +231,9 @@ public class TestClient implements ServerHandler {
 		
 		List<Message> response = SendMessage(msg);
 		
-		for ( Message m : response ) {
+		for ( int i=1; i < response.size(); i++ ) {
+			Message m = response.get(i);
+			System.out.println(m.Serialize());
 			handler.messageReceived(m);
 		}
 	}
