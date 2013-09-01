@@ -12,9 +12,11 @@ public class SimpleClientHandler implements ClientHandler{
 
 	// A treemap containing all of the groups this client is a part of.
 	private Map<String, GroupAdapter> groups;
+	private String IDToken;
 	
-	public SimpleClientHandler() {
+	public SimpleClientHandler( String IDToken ) {
 		groups = new TreeMap<String, GroupAdapter>();
+		this.IDToken = IDToken;
 	}
 	
 	@Override
@@ -42,6 +44,11 @@ public class SimpleClientHandler implements ClientHandler{
 	public void sendMessageToGroup(Message msg) {
 		// Lookup the group
 		GroupAdapter groupAdapter = groups.get(msg.Headers.get("groupName"));
+		
+		if ( groupAdapter == null ) {
+			this.joinGroup(msg.Headers.get("groupName"));
+			groupAdapter = groups.get(msg.Headers.get("groupName"));
+		}
 		
 		try {
 			groupAdapter.postMessage(msg);
@@ -77,7 +84,7 @@ public class SimpleClientHandler implements ClientHandler{
 	@Override
 	public void destroy() {
 		// Remove all references to this object?
-		ClientRegistrar.get().removeClient(this);
+		ClientRegistrar.get().removeClient(this.IDToken);
 	}
 
 	@Override

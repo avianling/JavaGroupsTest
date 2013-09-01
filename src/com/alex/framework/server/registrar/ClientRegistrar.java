@@ -1,5 +1,6 @@
 package com.alex.framework.server.registrar;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +54,7 @@ public class ClientRegistrar {
 		// and give the uuid as a string back to the client to use
 		// to identify themselves in future.
 		
-		ClientHandler thisClientsHandler = new SimpleClientHandler();
+		ClientHandler thisClientsHandler = new SimpleClientHandler( uuid.toString() );
 		
 		clients.put(uuid.toString(), thisClientsHandler);
 		
@@ -70,16 +71,21 @@ public class ClientRegistrar {
 		}
 	}
 	
-	public void removeClient( ClientHandler client ) {
-		if ( clients.containsValue(client) ) {
+	public void removeClient( String client ) {
+		if ( clients.containsKey(client) ) {
 			clients.remove(client);
 		}
 	}
 	
 	
 	public void checkClientLeases() {
-		for ( ClientHandler client : clients.values() ) {
+		System.out.println("Lease controller found " + clients.size() + " clients");
+		Collection<ClientHandler> preClients = clients.values();
+		for ( ClientHandler client : preClients ) {
 			client.checkLeases();
 		}
+		
+		
+		System.out.println("Now there are " + clients.size());
 	}
 }

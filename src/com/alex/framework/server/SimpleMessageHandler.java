@@ -65,19 +65,19 @@ public class SimpleMessageHandler implements MessageHandler {
 							ClientHandler handler = ClientRegistrar.get().findClient(m.Headers.get("idToken"));
 							handler.joinGroup(m.Headers.get("groupName"));
 							
-							response.Headers.put("code", "ok");
+							response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_SUCCESS);
 							response.Payload = "Joined the group " + m.Headers.get("groupName");
 						} catch ( NoSuchClientException e ) {
-							response.Headers.put("code", "fail");
+							response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
 							response.Payload = e.getMessage();
 						}
 					} else {
-						response.Headers.put("code", "fail");
+						response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
 						response.Payload = "Failed - no group name was supplied";
 						
 					}
 				} else {
-					response.Headers.put("code", "fail");
+					response.Headers.put(MessageConstants.FIELD_CODE, MessageConstants.CODE_FAIL);
 					response.Payload = "Failed - no id token supplied. Try registering first?";
 					
 				}
