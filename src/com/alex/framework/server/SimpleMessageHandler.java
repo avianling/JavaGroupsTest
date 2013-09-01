@@ -135,7 +135,6 @@ public class SimpleMessageHandler implements MessageHandler {
 							GroupAdapter adapter = client.getGroup(groupName);
 							for ( Message newMessage : adapter.getUpdates() ) {
 								responseList.add(newMessage);
-								
 							}
 						}
 						
@@ -153,10 +152,8 @@ public class SimpleMessageHandler implements MessageHandler {
 				
 			}
 			
-			
-			
 			for ( Message outgoingMsg : responseList ) {
-				out.write(response.Serialize().getBytes());
+				out.write(outgoingMsg.Serialize().getBytes());
 				out.write("\n".getBytes());
 			}
 			out.write("\n".getBytes());
