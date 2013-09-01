@@ -135,6 +135,7 @@ public class SimpleMessageHandler implements MessageHandler {
 							GroupAdapter adapter = client.getGroup(groupName);
 							for ( Message newMessage : adapter.getUpdates() ) {
 								responseList.add(newMessage);
+								System.out.println("-----" + newMessage.Payload );
 							}
 						}
 						

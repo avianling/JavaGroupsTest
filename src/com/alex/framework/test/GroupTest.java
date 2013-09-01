@@ -14,6 +14,7 @@ public class GroupTest extends AsyncGroup {
 	@Override
 	public void onMessageReceived(Message msg) {
 		System.out.println(msg.Payload);
+		
 	}
 
 }

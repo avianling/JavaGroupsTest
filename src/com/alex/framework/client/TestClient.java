@@ -116,7 +116,6 @@ public class TestClient implements ServerHandler {
 			r.waitingForResponseTime = System.nanoTime() - temp;
 			while ( line.length() > 0 ) {
 				temp = System.nanoTime();
-				System.out.println("SPOON: '" + line + "'");
 				Message response = (Message) JSON.fromJson(line, Message.class);
 				r.serializationTime += System.nanoTime() - temp;
 				//Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
@@ -213,9 +212,11 @@ public class TestClient implements ServerHandler {
 		
 		List<Message> response = SendMessage(msg);
 		
+		System.out.println("Messages from the server:" );
 		for ( Message m : response ) {
 			System.out.println(m.Serialize() );
 		}
+		System.out.println("--End Messages--");
 		
 		Message m = response.get(0);
 		if ( m!=null ) {
@@ -225,6 +226,10 @@ public class TestClient implements ServerHandler {
 					Register();
 					JoinGroup(group);
 					Post(message, group);
+				}
+			} else {
+				for ( int i=1; i < response.size(); i++ ) {
+					handler.messageReceived(response.get(i));
 				}
 			}
 		}

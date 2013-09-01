@@ -38,7 +38,6 @@ public abstract class AsyncGroup extends BaseGroup implements Runnable {
 					String m = outgoingQueue.poll();
 					if ( m != null ) {
 						this.serverHandler.Post(m, groupName);
-						this.serverHandler.GetUpdates();
 					} else {
 						this.wait();
 					}
