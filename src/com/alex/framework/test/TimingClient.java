@@ -31,16 +31,7 @@ public class TimingClient extends AsyncGroup {
 	}
 	
 	@Override
-	public void onMessageReceived(Message msg) {
-		// Get the time when the message was sent.
-		/*if ( msgSendTimes.containsKey(""+msg.Payload)) {
-			long startTime = msgSendTimes.get((String)msg.Payload);
-			long elapsedTime = System.nanoTime() - startTime;
-			msgSendTimes.remove((String)msg.Payload);
-			msgTimes.add(elapsedTime);
-			System.out.println(elapsedTime / 1000000000f);
-		}*/
-		
+	public void onMessageReceived(Message msg) {		
 		// if the message is one which we have been collecting timing information,
 		// display that timing information.
 		for (Map.Entry<String, com.alex.logging.TimingRecord> entry : TimingRecord.records.entrySet())

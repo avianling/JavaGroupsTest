@@ -44,7 +44,7 @@ public class JabberClient implements MessageHandler {
 	}
 	
 	public static void main( String[] args ) throws UnknownHostException, InterruptedException {
-		JabberClient client = new JabberClient(50, "something", "testGroup");
+		JabberClient client = new JabberClient(500, "something", "testGroup");
 	}
 	
 	
