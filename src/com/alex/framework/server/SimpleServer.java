@@ -20,7 +20,7 @@ public class SimpleServer implements Server, Runnable {
 		// only needs to be called once per program.
 		JSON json = new JSON();
 		
-		SetMessageHandler( new SimpleMessageHandler() );
+		SetMessageHandler( new ParallelMessageHandler() );
 		
 		new Thread(this).start();
 	}

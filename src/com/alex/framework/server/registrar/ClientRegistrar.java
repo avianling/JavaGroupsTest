@@ -81,9 +81,9 @@ public class ClientRegistrar {
 	
 	public void checkClientLeases() {
 		System.out.println("We have " + clients.size() + " clients connected atm");
-		Collection<ClientHandler> preClients = clients.values();
+		/*Collection<ClientHandler> preClients = clients.values();
 		for ( ClientHandler client : preClients ) {
 			client.checkLeases();
-		}
+		}*/
 	}
 }
