@@ -20,8 +20,6 @@ public class SimpleServer implements Server, Runnable {
 		// only needs to be called once per program.
 		JSON json = new JSON();
 		
-		//threadManager = Executors.newCachedThreadPool();
-		
 		SetMessageHandler( new SimpleMessageHandler() );
 		
 		new Thread(this).start();
@@ -47,8 +45,6 @@ public class SimpleServer implements Server, Runnable {
 			
 			while ( true ) {
 				Socket s = listener.accept();
-				
-				System.out.println("A client connected");
 				
 				msgHandler.parse(s);
 				

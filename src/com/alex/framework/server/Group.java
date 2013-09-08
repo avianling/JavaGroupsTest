@@ -61,7 +61,7 @@ public class Group extends ReceiverAdapter {
 	 * Called whenever this groupAdapter gets a message from the javagroup its listening to.
 	 */
 	public void receive(org.jgroups.Message msg) { 
-		Logger.Log("Server: GroupStore received an update. Saving it.");
+		//Logger.Log("Server: GroupStore received an update. Saving it.");
 		com.alex.framework.Message message = new com.alex.framework.Message();
 		message.Payload = msg.getObject().toString();
 		if ( msg.dest() != null ) {
@@ -73,9 +73,5 @@ public class Group extends ReceiverAdapter {
 			messageBacklog.add(message);
 		}
 		
-		System.out.println("Currently, the group store on the server contains:");
-		for ( Message m : messageBacklog ) {
-			System.out.println(m.Payload);
-		}
 	}
 }
