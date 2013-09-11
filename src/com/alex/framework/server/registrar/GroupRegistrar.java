@@ -2,6 +2,8 @@ package com.alex.framework.server.registrar;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.alex.framework.server.Group;
 import com.alex.framework.server.exceptions.CouldNotCreateGroup;
@@ -15,12 +17,12 @@ import com.alex.framework.server.exceptions.CouldNotCreateGroup;
  *
  */
 public class GroupRegistrar {
-	private static HashMap<String, Group> groups;
+	private static Map<String, Group> groups;
 	
 	public static Group getGroup( String groupName ) throws CouldNotCreateGroup {
 		// If the groups map doesn't exist, create it.
 		if ( groups == null ) {
-			groups = new HashMap<String,Group>();
+			groups = new ConcurrentHashMap<String,Group>();
 		}
 		
 		// If the group we are after doesn't exist, create one.

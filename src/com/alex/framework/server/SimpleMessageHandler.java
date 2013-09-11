@@ -30,15 +30,15 @@ public class SimpleMessageHandler implements MessageHandler {
 			InputStream input = clientSocket.getInputStream();
 			
 			InputStreamReader r = new InputStreamReader(input);
-			Logger.Log("Server: Starting to download message");
+			//Logger.Log("Server: Starting to download message");
 			
 			// Manually read the string... :(
 			BufferedReader reader = new BufferedReader(r);
 			String data = reader.readLine();
-			Logger.Log("Server: Received message '" + data + "'");
+			//Logger.Log("Server: Received message '" + data + "'");
 			Message m = JSON.parser.fromJson(data, Message.class);
 			
-			Logger.Log("Server: finished downloading message");
+			//Logger.Log("Server: finished downloading message");
 			
 			// Now that we have the message, we must process it.
 			// If it's a normal message, forward it to javagroups.

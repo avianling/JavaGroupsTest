@@ -4,12 +4,13 @@ import com.alex.framework.server.registrar.ClientRegistrar;
 
 public class LeaseController implements Runnable {
 
-	public static final long leaseTime = 30000;
+	public static final long leaseTime = 15000;
 	
 	@Override
 	public void run() {
 		// Check that for every group adapter, it isn't past their lease expiration time.
 		while ( true ) {
+		
 			ClientRegistrar.get().checkClientLeases();
 			
 			System.out.println("Checking Leases");

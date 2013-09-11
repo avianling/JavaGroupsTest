@@ -1,6 +1,7 @@
 package com.alex.framework.server;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.jgroups.Address;
@@ -27,6 +28,12 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 	
 	private ClientHandler clientHandler;
 	
+	/*
+	 * Contains the messages which we are waiting to send to the client when they connect.
+	 * Should be capped at some number to prevent extreme memory comsumption.
+	 */
+	private List<com.alex.framework.Message> messageQueue;
+	
 	// This is the sequence number of the last message we sent to our client.
 	// Should be used when we request updates from the group message store ( called group ).
 	private int sequenceNumberOfLastMessageToClient;
@@ -36,6 +43,8 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 	public JGroupAdapter() throws Exception {
 		channel = new JChannel();
 		channel.setReceiver(this);
+		
+		messageQueue = new LinkedList<com.alex.framework.Message>();
 		
 		updateLease();
 	}
@@ -68,6 +77,11 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 		}
 		message.Headers.put("src", msg.getSrc().toString());
 		
+		// put the message in the message queue.
+		synchronized ( messageQueue ) {
+			messageQueue.add(message);
+		}
+		
 		clientHandler.messageReceivedFromGroup(message);
 	}
 
@@ -86,13 +100,10 @@ public class JGroupAdapter extends ReceiverAdapter implements GroupAdapter {
 	@Override
 	public List<com.alex.framework.Message> getUpdates() {
 		updateLease();
-		try {
-			List<com.alex.framework.Message> messages = GroupRegistrar.getGroup(groupName).getMessagesSince(sequenceNumberOfLastMessageToClient);
-			sequenceNumberOfLastMessageToClient = GroupRegistrar.getGroup(groupName).getSequenceNumber();
-			return messages;
-		} catch ( Exception e ) {
-			e.printStackTrace();
-			return null;
+		synchronized( messageQueue ) {
+			List l = messageQueue;
+			messageQueue = new LinkedList<com.alex.framework.Message>();
+			return l;
 		}
 	}
 

@@ -11,7 +11,7 @@ public class ServerTest {
 	 */
 	public static void main(String[] args) {
 		// Start a simple server.
-		Logger.LogToConsole = true;
+		Logger.LogToConsole = false;
 		Server s = new SimpleServer();
 		
 		s.Start();

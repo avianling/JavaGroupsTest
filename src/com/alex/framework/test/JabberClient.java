@@ -22,7 +22,7 @@ public class JabberClient implements Runnable {
 	
 	public static void main( String[] args ) throws InterruptedException {
 		
-		Logger.LogToConsole = false;
+		Logger.LogToConsole = true;
 		
 		for ( int i=0; i < 60; i++ ) {
 			JabberClient j = new JabberClient();
@@ -50,7 +50,7 @@ public class JabberClient implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+	
 	}
 	
 }

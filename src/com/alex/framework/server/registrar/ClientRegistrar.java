@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.alex.framework.server.ClientHandler;
 import com.alex.framework.server.LeaseController;
@@ -30,7 +31,7 @@ public class ClientRegistrar {
 	
 	
 	public ClientRegistrar() {
-		clients = new HashMap<String, ClientHandler>();
+		clients = new ConcurrentHashMap<String, ClientHandler>();
 		
 		// start the lease controller.
 		c = new LeaseController();
@@ -79,9 +80,10 @@ public class ClientRegistrar {
 	
 	
 	public void checkClientLeases() {
-		Collection<ClientHandler> preClients = clients.values();
+		System.out.println("We have " + clients.size() + " clients connected atm");
+		/*Collection<ClientHandler> preClients = clients.values();
 		for ( ClientHandler client : preClients ) {
 			client.checkLeases();
-		}
+		}*/
 	}
 }

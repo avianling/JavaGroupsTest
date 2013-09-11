@@ -13,7 +13,7 @@ public class MessageTest {
 		Message M = new Message();
 		M.Headers.put("test", "ing");
 		M.Headers.put("alex", "borboom");
-		M.Payload = "Bitches love payloads";
+		M.Payload = "something something";
 		
 		System.out.println(M.Serialize());
 		
