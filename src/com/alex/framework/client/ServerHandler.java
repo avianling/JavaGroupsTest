@@ -10,7 +10,7 @@ import com.alex.framework.Message;
  *
  */
 public interface ServerHandler {
-	public void Connect();
+	public boolean Connect();
 	
 	/**
 	 * A method to register this client with the server.

@@ -45,7 +45,7 @@ public class TimingClient extends AsyncGroup {
 
 	
 	public static void main( String[] args ) throws UnknownHostException, InterruptedException {
-		TimingClient t = new TimingClient("timingGroup");
+		TimingClient t = new TimingClient("otherGroup");
 		
 		Logger.LogToConsole=false;
 		

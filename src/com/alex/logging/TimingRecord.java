@@ -49,7 +49,7 @@ public class TimingRecord {
 	
 	public String print() {
 		//return "" + connectionTime + "	" + serializationTime + "	" + sendingTime + "	" + waitingForResponseTime + "	" + downloadingTime;
-		return "" + ( connectionTime + serializationTime + sendingTime + waitingForResponseTime + downloadingTime);
+		return "" + ( ( connectionTime + serializationTime + sendingTime + waitingForResponseTime + downloadingTime) / 1000000 );
 		//return startTime + "	" + connectionInit + "	" + connectionMade + "	" + serializationStart + "	" + serializationFinished + "	" + sendingStart + "	" + sendingFinish + "	" + receivingStart + "	" + responseEnd;
 	}
 };

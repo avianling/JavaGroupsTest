@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 
 import com.alex.framework.Message;
 import com.alex.framework.client.AsyncGroup;
+import com.alex.framework.client.MessageHandler;
 
 public class GroupTest extends AsyncGroup {
 
@@ -13,7 +14,6 @@ public class GroupTest extends AsyncGroup {
 
 	@Override
 	public void onMessageReceived(Message msg) {
-		System.out.println(msg.Payload);
 		
 	}
 

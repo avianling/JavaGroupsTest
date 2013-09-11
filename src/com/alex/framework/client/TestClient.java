@@ -48,13 +48,26 @@ public class TestClient implements ServerHandler {
 	}
 	
 	@Override
-	public void Connect() {
-		_socket = new Socket();
-		try {
-			_socket.connect( serverAddress ); // new InetSocketAddress(InetAddress.getLocalHost(), 50512)
-		} catch (IOException e) {
-			e.printStackTrace();
+	public boolean Connect() {
+		int attempts = 0;
+		while ( attempts < 10 ) {
+			try {
+				_socket = new Socket();
+				_socket.connect( serverAddress );
+				return true;
+			} catch (IOException e) {
+				attempts += 1;
+				//TODO: Remove this line. It will make output look messy.
+				e.printStackTrace();
+				try {
+					Thread.sleep(40);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			attempts++;
 		}
+		return false;
 	}
 
 	@Override
@@ -78,23 +91,32 @@ public class TestClient implements ServerHandler {
 		//Logger.LogTiming("Starting to connect");
 		TimingRecord r = TimingRecord.records.get(msg.Headers.get("uuid"));
 		long temp = System.nanoTime();
-		Connect();
-		r.connectionTime = System.nanoTime() - temp;
-		//Logger.LogTiming("Connected");
+		
+		// Connect will return true if we were able to connect, false otherwise.
+		if ( !Connect() ) {
+			
+			System.out.println("We had a booboo :(");
+			return null;
+		}
+		
+		if ( r != null ) {
+			r.connectionTime = System.nanoTime() - temp;
+		}
 		
 		Logger.Log("Client: Starting to send message.");
 		try {
 			OutputStream out = _socket.getOutputStream();
-			//Logger.LogTiming("Starting to serialize message");
 			
 			temp = System.nanoTime();
 			String data = msg.Serialize();
-			r.serializationTime = System.nanoTime() - temp;
+			if ( r!=null )
+				r.serializationTime = System.nanoTime() - temp;
 			
 			temp = System.nanoTime();
 			out.write(data.getBytes());
 			out.write("\n\n".getBytes()); // one new line to signal the end of the message and one to signal the end of the sequence.
-			r.sendingTime = System.nanoTime() - temp;
+			if ( r!=null )
+				r.sendingTime = System.nanoTime() - temp;
 			
 			temp = System.nanoTime();
 			
@@ -113,12 +135,12 @@ public class TestClient implements ServerHandler {
 			
 
 			String line = reader.readLine();
-			r.waitingForResponseTime = System.nanoTime() - temp;
+			if ( r!=null )
+				r.waitingForResponseTime = System.nanoTime() - temp;
 			while ( line.length() > 0 ) {
 				temp = System.nanoTime();
 				Message response = (Message) JSON.fromJson(line, Message.class);
-				r.serializationTime += System.nanoTime() - temp;
-				//Logger.Log("Client: Received response '" + response.Serialize() + "' from server.");
+				if ( r!=null ) r.serializationTime += System.nanoTime() - temp;
 				
 				// If the message is valid, add it to the list of received messages.
 				if ( response != null ) {
@@ -127,9 +149,8 @@ public class TestClient implements ServerHandler {
 				
 				temp = System.nanoTime();
 				line = reader.readLine();
-				r.downloadingTime = System.nanoTime() - temp;
+				if ( r!=null ) r.downloadingTime = System.nanoTime() - temp;
 			}
-			//Logger.LogTiming("Finished Reading Response");
 			
 			out.close();
 			in.close();
@@ -191,6 +212,7 @@ public class TestClient implements ServerHandler {
 		if ( m.Headers.get(MessageConstants.FIELD_CODE).equals(MessageConstants.CODE_FAIL)) { 
 			// if the reason is because we weren't registered, register and then try this again.
 			if ( m.Headers.get(MessageConstants.FIELD_FAILURE_CAUSE).equals(MessageConstants.FAIL_CAUSE_NOT_REGISTERED) ) {
+				System.out.println("001: Tried to join a group, but we weren't registered");
 				Register();
 				JoinGroup(groupName);
 			}
@@ -217,6 +239,7 @@ public class TestClient implements ServerHandler {
 			if ( m.Headers.get(MessageConstants.FIELD_CODE).equals(MessageConstants.CODE_FAIL)) { 
 				// if the reason is because we weren't registered, register and then try this again.
 				if ( m.Headers.get(MessageConstants.FIELD_FAILURE_CAUSE).equals(MessageConstants.FAIL_CAUSE_NOT_REGISTERED) ) {
+					System.out.println("002: Tried to post, but we weren't registered");
 					Register();
 					JoinGroup(group);
 					Post(message, group);

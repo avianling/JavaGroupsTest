@@ -17,36 +17,40 @@ import com.alex.logging.TimingRecord;
  * @author Alex
  *
  */
-public class JabberClient implements MessageHandler {
-
-	@Override
-	public void messageReceived(Message newMessage) {
-		// do nothing, we don't care about the response.
-	}
+public class JabberClient implements Runnable {
 	
-	public JabberClient( int rate, String message, String group ) throws InterruptedException, UnknownHostException {
-		ServerHandler handler = new com.alex.framework.client.TestClient(new InetSocketAddress("ec2-54-252-187-83.ap-southeast-2.compute.amazonaws.com",50512) );
-		//ServerHandler handler = new com.alex.framework.client.TestClient( new InetSocketAddress( InetAddress.getLocalHost(), 50512 ) );
-		handler.SetMessageHandler( new TestClient() );
+	
+	public static void main( String[] args ) throws InterruptedException {
 		
 		Logger.LogToConsole = false;
 		
-		handler.Register();
-		
-		handler.JoinGroup(group);
-		
-		while (true){
-			handler.Post(message, group);
-			
-			Thread.sleep(rate);
+		for ( int i=0; i < 60; i++ ) {
+			JabberClient j = new JabberClient();
+			Thread t = new Thread(j);
+			t.start();
+			Thread.sleep(100);
 		}
-	
 	}
-	
-	public static void main( String[] args ) throws UnknownHostException, InterruptedException {
-		JabberClient client = new JabberClient(500, "something", "testGroup");
-	}
-	
-	
 
+	@Override
+	public void run() {
+		try {
+			GroupTest g = new GroupTest("jabberGroup");
+			
+			
+			
+			while ( true ) {
+				g.sendMessage("jabber client says no");
+				
+				Thread.sleep(15000);
+			}
+			
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

@@ -11,28 +11,25 @@ import com.alex.framework.client.ServerHandler;
 import com.alex.logging.Logger;
 import com.alex.logging.TimingRecord;
 
-public class TestClient implements MessageHandler {
+public class TestClient {
 
 	/**
 	 * @param args
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		// create a test client which gets text input from stdin & sends it to the server.
 		GroupTest g = new GroupTest("testGroup");
-		Logger.LogToConsole = true;
-		BufferedReader inputReader = new BufferedReader( new InputStreamReader( System.in ) );
+		Logger.LogToConsole = false;
+		//BufferedReader inputReader = new BufferedReader( new InputStreamReader( System.in ) );
 		
 		while(true) {
-			String input = inputReader.readLine();
-			g.sendMessage(input);
+			//String input = inputReader.readLine();
+			g.sendMessage("test");
+			//Thread.sleep(500);
 			//handler.GetUpdates();
 		}
-	}
-
-	@Override
-	public void messageReceived(Message newMessage) {
-		System.out.println(">>" + newMessage.Payload);
 	}
 
 }
