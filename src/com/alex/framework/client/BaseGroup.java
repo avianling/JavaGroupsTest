@@ -29,8 +29,8 @@ public abstract class BaseGroup implements MessageHandler {
 	public void connect() throws UnknownHostException {
 		// TODO: Get this from a properties object?
 		// Use the basic java address structure if possible.
-		//serverHandler = new TestClient(new InetSocketAddress("ec2-54-252-187-83.ap-southeast-2.compute.amazonaws.com",50512));
-		serverHandler = new TestClient(new InetSocketAddress(InetAddress.getByName("192.168.1.108"),50512));
+		serverHandler = new AndroidServerHandler(new InetSocketAddress("ec2-54-252-187-83.ap-southeast-2.compute.amazonaws.com",50512));
+		//serverHandler = new AndroidServerHandler(new InetSocketAddress(InetAddress.getByName("192.168.1.108"),50512));
 		
 		serverHandler.SetMessageHandler(this);
 		

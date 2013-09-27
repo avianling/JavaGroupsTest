@@ -172,7 +172,13 @@ public class TestClient implements ServerHandler {
 		
 		Logger.Log("Client: Starting to send registration message");
 		
+		// if on android
+		// register with GCM
+		
+		
 		LinkedList<Message> response = (LinkedList)SendMessage(msg);
+		
+		
 		
 		// We only expect one response from the server.
 		String msgCode = response.getFirst().Headers.get(MessageConstants.FIELD_CODE);

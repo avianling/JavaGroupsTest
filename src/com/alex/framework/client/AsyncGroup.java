@@ -17,6 +17,8 @@ public abstract class AsyncGroup extends BaseGroup implements Runnable {
 		new Thread(this).start();
 	}
 	
+	
+	
 	public void sendMessage( String message ) {
 		synchronized(this) {
 			if ( outgoingQueue.peek() == null ) {
